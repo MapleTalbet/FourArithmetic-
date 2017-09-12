@@ -3,72 +3,109 @@ package chapter1;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.text.StringCharacterIterator;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Stack;
 
+import org.omg.CORBA.VersionSpecHelper;
+/**
+ * 描述：一个自动生成四则运算的程序，包含真分数
+ * 部分功未实现
+ * @author meng.pc
+ *@version:第二版 
+ */
 public class Arithmetic {
-	private int random;
-	private int i;
-	private int data1;
-	private int data2;
-	float count=0;
-private	int grade=0;
+	private	int grade=0;  //计分
+	char[] oper = new char[100];
+	 Stack<Character> stack = new Stack<Character>(); // 创建堆栈对象 
 	
- public int getRandom() {
-	 	random=(int)(99*Math.random()+1);
-		return random;
+  //得到操作符
+public int getChar(int number){//生成运算符号
+	  int randnumber;
+	  int j=0 ,i=0;
+	  for(;i<number;i++){
+		  randnumber = new Random().nextInt(4);
+		  switch(randnumber){
+		  case 0: oper[j]='+';System.out.print(oper[j]);break;
+		  case 1: oper[j]='-';System.out.print(oper[j]);break;
+		  case 2:  if(j>0) {
+			  if((oper[j-1]=='-')||(oper[j-1]=='-'))
+			  if(new Random().nextInt(3)==0){
+				  oper[j]=oper[j-1];
+				  oper[j-1]='(';
+				  oper[j+1]=')';
+				  j+=2;
+			  }
+			  }
+		  oper[j]='*'; System.out.print(oper[j]);break;
+		  case 3: if(j>0) {
+			  if((oper[j-1]=='-')||(oper[j-1]=='+'))
+			  if(new Random().nextInt(3)==0){
+				  oper[j]=oper[j-1];
+				  oper[j-1]='(';
+				  oper[j+1]=')';
+				  j+=2;
+			  }
+			  break;}
+		  
+		  oper[j]='/';System.out.print(oper[j]); break;
+		  default: break;
+		  }
+		  j++;
+	  }
+	  oper[j]='=';
+	  System.out.println();
+	  return j-i;
+	  }
+
+public void printNumber(){
+	int randNumber;
+	Numbers num = new Numbers();
+	randNumber =new Random().nextInt(3);
+	if(randNumber == 0){
+		num.inte=0;
+		num.numerator=(int)(10*Math.random()+2);
+		num.denominator=(num.denominator%num.numerator)+1;
+		System.out.print(num.numerator+"/"+num.denominator);
+		stack.push((char) (num.numerator/num.denominator)); //
+		System.out.print(" ");
+	}else{
+		num.inte=(int)(99*Math.random()+1);
+		num.numerator=0;
+		num.denominator=1;
+		stack.push((char) num.inte);
+		System.out.print(num.inte);
 	}
- public int geti(){
-	 i=new Random().nextInt(4);
-	 return i;
- }	
-	public void add(int data1,int data2){
-		count=data1+data2;
-		System.out.print(data1+"+"+data2+"=");
-	}
-	public void sub(int data1,int data2){
-		count=data1-data2;
-		System.out.print(data1+"-"+data2+"=");
-		
-	}
-	public void mul(int data1,int data2){
-		count=data1*data2;
-		System.out.print(data1+"*"+data2+"=");
-		
-	}
-	public void div(int data1,int data2){
-		
-		count=(float)data1/(float)data2;
-		 count=(float)(Math.round(count*100))/100;
-		System.out.println(count);
-		System.out.print(data1+"/"+data2+"=");
-		
-	}
-	public float FourArithmetic(){
-		data1=getRandom();
-		data2=getRandom();
-		if(0==geti()){
-			add(data1,data2);		
-		}
-		else if(1==geti()){
-			sub(data1,data2);
-		}
-		else if(2==geti()){
-			mul(data1,data2);
-		}
-		else
-			{
-			div(data1,data2);}
-		return count;
-	}
+}
+public void GeneratingOperation(int number){//生成算式
+    int operCount=0;
+    int rev=getChar(number);
+   while(operCount<=(number+rev)){
+    	if(oper[operCount]=='('){
+    		System.out.print(oper[operCount]);
+    		stack.push(oper[operCount]);
+    		operCount++;
+    	}
+    		printNumber();
+    		System.out.print(oper[operCount]);
+    		stack.push(oper[operCount]);
+    		operCount++;
+    		 if(oper[operCount]==')'){//若有右括号则显示括号
+    	           System.out.print(oper[operCount]);
+    	           stack.push(oper[operCount]);
+    	           operCount++;
+    	        }
+    	}
+    }
 	
- @SuppressWarnings("resource")
+
+@SuppressWarnings("resource")
 public int Judge(double result){
-	 
-	 Scanner scan = new Scanner(System.in);
+	  Scanner scan = new Scanner(System.in);
 	  float read = scan.nextFloat();
 	 // scan.close();
-	  //	  System.out.println("输入数据："+read); 
 	 if(read == result){
 		 System.out.print("正确");
 		 grade++;
@@ -79,38 +116,5 @@ public int Judge(double result){
 	 System.out.print(result);
 	 return grade;
  }
-	
-	public static void main(String[] args) {
-		// TODO 自动生成的方法存根
-		Arithmetic text = new Arithmetic();
-		int grade=0;
-		 BufferedReader reader=null;
-	        InputStreamReader inputStreamReader=null;
-	        try{
-	            System.out.print("输入  # 结束运算:");
-	           
-	           String str;
-	            do{
-	            	float result=text.FourArithmetic();
-	        	    grade=text.Judge(result);
-	        	    inputStreamReader=new InputStreamReader(System.in);
-		            reader=new BufferedReader(inputStreamReader);
-		            str=reader.readLine();
-	            }while(!str.equals("#"));
-	            System.out.println("获得"+grade+"分,测试结束");
-	        }catch(Exception e){
-	            e.printStackTrace();
-	        }
-	        if(reader!=null){
-	            try {
-	                reader.close();
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	            }
-	        }
-		
-		
-		
-	}
-
 }
+	
