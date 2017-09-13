@@ -1,15 +1,8 @@
 package chapter1;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.text.StringCharacterIterator;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
-
-import org.omg.CORBA.VersionSpecHelper;
 /**
  * 描述：一个自动生成四则运算的程序，包含真分数
  * 部分功未实现
@@ -48,7 +41,7 @@ public int getChar(int number){//生成运算符号
 				  oper[j+1]=')';
 				  j+=2;
 			  }
-			  break;}
+			}
 		  
 		  oper[j]='/';System.out.print(oper[j]); break;
 		  default: break;
